@@ -18,7 +18,7 @@ namespace MySQLBuilder
 
         private void btnLoadFile_Click(object sender, EventArgs e)
         {
-            openFileDialog1.InitialDirectory = "c:\\";
+
             openFileDialog1.Filter = "JSON files (*.json)|*.json|CSV files (*.csv)|*.csv|All files (*.*)|*.*";
             openFileDialog1.FilterIndex = 2;
             openFileDialog1.RestoreDirectory = true;
@@ -48,6 +48,7 @@ namespace MySQLBuilder
                 }
                 else if (openFileDialog1.FileName.Contains(".json"))
                 {
+                    MessageBox.Show("JSON file reading is not yet implemented");
                     //using (StreamReader reader = new StreamReader(fileStream))
                     //{
                     //    JObject json = JObject.Parse(reader.ReadToEnd());
@@ -81,7 +82,7 @@ namespace MySQLBuilder
             }
             if (operation == "INSERT")
             {
-                previewText = "INSERT INTO `" + tbTableName.Text + "` (" + String.Join(",", columns) + ") VALUES (" + String.Join(",", fileContents[1].Split(',').ToList().Select(x => "'" + x.Replace("'", "\'").Replace("\"", "") + "'").ToArray()) + ");";
+                previewText = "INSERT INTO `" + tbTableName.Text + "` (" + String.Join(",", columns) + ") VALUES (" + String.Join(",", cleanValues(fileContents[1]))  + ");";
             }
             else if (operation == "UPDATE")
             {
@@ -97,8 +98,8 @@ namespace MySQLBuilder
 
         private void btnSelectDest_Click(object sender, EventArgs e)
         {
-            saveFileDialog1.InitialDirectory = "c:\\";
             saveFileDialog1.Filter = "MySQL files (*.sql)|*.sql|All files (*.*)|*.*";
+            saveFileDialog1.FileName = tbTableName.Text;
             saveFileDialog1.FilterIndex = 0;
             saveFileDialog1.RestoreDirectory = true;
 
@@ -151,6 +152,7 @@ namespace MySQLBuilder
                     {
                         outputData.ForEach(line => sw.WriteLine(line));
                     }
+                    resetForm();
                 }
                 else
                 {
@@ -179,9 +181,10 @@ namespace MySQLBuilder
                         if (quit)
                         {
                             break;
-                            MessageBox.Show("Operation Complete!");
+                            
                         }
                     }
+                    resetForm();
                 }
             }
             
@@ -193,7 +196,7 @@ namespace MySQLBuilder
             parser.HasFieldsEnclosedInQuotes = true;
             parser.SetDelimiters(",");
             List<string> rawFields = parser.ReadFields().ToList();
-            return rawFields.Select(z => z.Replace("'", "\'").Replace("\"", "")).ToArray();
+            return rawFields.Select(z => "'" + z.Replace("'", "\'").Replace("\"", "") + "'").ToArray();
         }
         private string extractProperties(SQLColumn x)
         {
@@ -239,6 +242,32 @@ namespace MySQLBuilder
                 row.Cells["OutputCol"].Value = row.Cells["InputCol"].Value;
                 
             }
+        }
+        private void resetForm()
+        {
+            #region clearFormData
+            // Clear any rows from table
+            dgvMapping.Rows.Clear();
+            // Remote table name
+            tbTableName.Text = "";
+            // Remove input path
+            tbInputFilePath.Text = "";
+            // Remove output path
+            tbOutputFile.Text = "";
+            // remove preview
+            rtbPreview.Text = "";
+            #endregion
+
+            #region freeMemory
+            // Remove column list
+            columns = new List<SQLColumn>();
+            // Empty file contents from memory
+            Array.Clear(fileContents);
+            // Clear memory of output data 
+            outputData = new List<string>();
+            #endregion
+            // Notify of completion
+            MessageBox.Show("Operation Complete!");
         }
     }
 }
