@@ -269,5 +269,10 @@ namespace MySQLBuilder
             // Notify of completion
             MessageBox.Show("Operation Complete!");
         }
+
+        private void cbDeleteInputOnCompletion_CheckedChanged(object sender, EventArgs e)
+        {
+            MessageBox.Show("This feature has not been implemented yet");
+        }
     }
 }

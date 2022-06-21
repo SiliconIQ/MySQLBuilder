@@ -59,6 +59,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.cbCTIfNotExists = new System.Windows.Forms.CheckBox();
             this.btnCopyNames = new System.Windows.Forms.Button();
+            this.cbDeleteInputOnCompletion = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMapping)).BeginInit();
             this.pWildcards.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVolSize)).BeginInit();
@@ -281,6 +282,7 @@
             // 
             // pWildcards
             // 
+            this.pWildcards.Controls.Add(this.cbDeleteInputOnCompletion);
             this.pWildcards.Controls.Add(this.nudVolSize);
             this.pWildcards.Controls.Add(this.label2);
             this.pWildcards.Controls.Add(this.cbWhereID);
@@ -353,6 +355,17 @@
             this.btnCopyNames.UseVisualStyleBackColor = true;
             this.btnCopyNames.Click += new System.EventHandler(this.button1_Click);
             // 
+            // cbDeleteInputOnCompletion
+            // 
+            this.cbDeleteInputOnCompletion.AutoSize = true;
+            this.cbDeleteInputOnCompletion.Location = new System.Drawing.Point(566, 37);
+            this.cbDeleteInputOnCompletion.Name = "cbDeleteInputOnCompletion";
+            this.cbDeleteInputOnCompletion.Size = new System.Drawing.Size(205, 24);
+            this.cbDeleteInputOnCompletion.TabIndex = 22;
+            this.cbDeleteInputOnCompletion.Text = "Delete File on Completion";
+            this.cbDeleteInputOnCompletion.UseVisualStyleBackColor = true;
+            this.cbDeleteInputOnCompletion.CheckedChanged += new System.EventHandler(this.cbDeleteInputOnCompletion_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -418,5 +431,6 @@
         private Button btnCopyNames;
         private NumericUpDown nudVolSize;
         private Label label2;
+        private CheckBox cbDeleteInputOnCompletion;
     }
 }
