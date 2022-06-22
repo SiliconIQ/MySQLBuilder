@@ -31,10 +31,11 @@ namespace MySQLBuilder
                 dgvMapping.Rows.Clear();
                 //Read the contents of the file into a stream
                 var fileStream = openFileDialog1.OpenFile();
+                List<List<string>> csvContents = new List<List<string>>();
                 using (StreamReader reader = new StreamReader(fileStream))
                 {
                     fileContents = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
+                    reader.Close();
                 }
                 if (openFileDialog1.FileName.Contains(".csv"))
                 {
@@ -151,6 +152,7 @@ namespace MySQLBuilder
                     using (StreamWriter sw = new StreamWriter(tbOutputFile.Text))
                     {
                         outputData.ForEach(line => sw.WriteLine(line));
+                        sw.Close();
                     }
                     resetForm();
                 }
@@ -177,6 +179,7 @@ namespace MySQLBuilder
                                 }
                                 
                             }
+                            sw.Close();
                         }
                         if (quit)
                         {
@@ -196,7 +199,8 @@ namespace MySQLBuilder
             parser.HasFieldsEnclosedInQuotes = true;
             parser.SetDelimiters(",");
             List<string> rawFields = parser.ReadFields().ToList();
-            return rawFields.Select(z => "'" + z.Replace("'", "\'").Replace("\"", "") + "'").ToArray();
+            List<string> cleanedFields = new List<string>();
+            return rawFields.Select(f => "'" + f.Replace("'", "\\'") + "'").ToArray();
         }
         private string extractProperties(SQLColumn x)
         {
