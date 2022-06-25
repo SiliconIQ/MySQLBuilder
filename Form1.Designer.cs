@@ -53,16 +53,20 @@
             this.btnGenerate = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.pWildcards = new System.Windows.Forms.Panel();
+            this.cbDeleteInputOnCompletion = new System.Windows.Forms.CheckBox();
             this.nudVolSize = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.cbWhereID = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.cbCTIfNotExists = new System.Windows.Forms.CheckBox();
             this.btnCopyNames = new System.Windows.Forms.Button();
-            this.cbDeleteInputOnCompletion = new System.Windows.Forms.CheckBox();
+            this.rtbConsole = new System.Windows.Forms.RichTextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMapping)).BeginInit();
             this.pWildcards.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVolSize)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dgvMapping
@@ -295,6 +299,17 @@
             this.pWildcards.Size = new System.Drawing.Size(894, 66);
             this.pWildcards.TabIndex = 17;
             // 
+            // cbDeleteInputOnCompletion
+            // 
+            this.cbDeleteInputOnCompletion.AutoSize = true;
+            this.cbDeleteInputOnCompletion.Location = new System.Drawing.Point(566, 37);
+            this.cbDeleteInputOnCompletion.Name = "cbDeleteInputOnCompletion";
+            this.cbDeleteInputOnCompletion.Size = new System.Drawing.Size(205, 24);
+            this.cbDeleteInputOnCompletion.TabIndex = 22;
+            this.cbDeleteInputOnCompletion.Text = "Delete File on Completion";
+            this.cbDeleteInputOnCompletion.UseVisualStyleBackColor = true;
+            this.cbDeleteInputOnCompletion.CheckedChanged += new System.EventHandler(this.cbDeleteInputOnCompletion_CheckedChanged);
+            // 
             // nudVolSize
             // 
             this.nudVolSize.Location = new System.Drawing.Point(140, 39);
@@ -355,22 +370,39 @@
             this.btnCopyNames.UseVisualStyleBackColor = true;
             this.btnCopyNames.Click += new System.EventHandler(this.button1_Click);
             // 
-            // cbDeleteInputOnCompletion
+            // rtbConsole
             // 
-            this.cbDeleteInputOnCompletion.AutoSize = true;
-            this.cbDeleteInputOnCompletion.Location = new System.Drawing.Point(566, 37);
-            this.cbDeleteInputOnCompletion.Name = "cbDeleteInputOnCompletion";
-            this.cbDeleteInputOnCompletion.Size = new System.Drawing.Size(205, 24);
-            this.cbDeleteInputOnCompletion.TabIndex = 22;
-            this.cbDeleteInputOnCompletion.Text = "Delete File on Completion";
-            this.cbDeleteInputOnCompletion.UseVisualStyleBackColor = true;
-            this.cbDeleteInputOnCompletion.CheckedChanged += new System.EventHandler(this.cbDeleteInputOnCompletion_CheckedChanged);
+            this.rtbConsole.Location = new System.Drawing.Point(11, 23);
+            this.rtbConsole.Name = "rtbConsole";
+            this.rtbConsole.ReadOnly = true;
+            this.rtbConsole.Size = new System.Drawing.Size(866, 93);
+            this.rtbConsole.TabIndex = 19;
+            this.rtbConsole.Text = "";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(3, 2);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(94, 20);
+            this.label8.TabIndex = 20;
+            this.label8.Text = "Console Log:";
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.rtbConsole);
+            this.panel1.Controls.Add(this.label8);
+            this.panel1.Location = new System.Drawing.Point(12, 521);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(889, 125);
+            this.panel1.TabIndex = 21;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(913, 522);
+            this.ClientSize = new System.Drawing.Size(913, 649);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnCopyNames);
             this.Controls.Add(this.pWildcards);
             this.Controls.Add(this.btnGenerate);
@@ -393,6 +425,8 @@
             this.pWildcards.ResumeLayout(false);
             this.pWildcards.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVolSize)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -432,5 +466,8 @@
         private NumericUpDown nudVolSize;
         private Label label2;
         private CheckBox cbDeleteInputOnCompletion;
+        private RichTextBox rtbConsole;
+        private Label label8;
+        private Panel panel1;
     }
 }

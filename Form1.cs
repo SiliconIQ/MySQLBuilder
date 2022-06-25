@@ -10,6 +10,7 @@ namespace MySQLBuilder
         public string[] fileContents;
         public List<string> outputData = new List<string>();
         public List<SQLColumn> columns = new List<SQLColumn>();
+        public List<Thread> processingThreads = new List<Thread>();
         public Form1()
         {
             InitializeComponent();
@@ -25,10 +26,15 @@ namespace MySQLBuilder
 
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
+                #region empty_old_data
+                writeToConsole("Status", "Clearing Form");
                 //Get the path of specified file
                 tbInputFilePath.Text = openFileDialog1.FileName;
                 // Clear any rows from table
                 dgvMapping.Rows.Clear();
+                #endregion
+                #region load_file
+                writeToConsole("Status", "Loading File Contents");
                 //Read the contents of the file into a stream
                 var fileStream = openFileDialog1.OpenFile();
                 List<List<string>> csvContents = new List<List<string>>();
@@ -37,6 +43,10 @@ namespace MySQLBuilder
                     fileContents = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     reader.Close();
                 }
+                writeToConsole("Status", "File loaded");
+                #endregion
+                #region load_headers
+                writeToConsole("Status", "Loading headers");
                 if (openFileDialog1.FileName.Contains(".csv"))
                 {
                     tbTableName.Text = openFileDialog1.FileName.Replace(".csv", "").Split('\\').Last();
@@ -46,6 +56,7 @@ namespace MySQLBuilder
                     {
                         dgvMapping.Rows.Add(new string[] { header.Replace("\"", "").Replace("'", "\'"), "" });
                     }
+                    writeToConsole("Status", "Headers loaded");
                 }
                 else if (openFileDialog1.FileName.Contains(".json"))
                 {
@@ -60,7 +71,15 @@ namespace MySQLBuilder
                 {
                     MessageBox.Show("Unsupported file");
                 }
-
+                #endregion
+                #region clean_data
+                writeToConsole("Status", "Cleaning input data to fit SQL format");
+                processingThreads = new Thread[fileContents.Length].ToList();
+                cleanValues();
+                #endregion
+                rtbConsole.Text += "[Status] File ready. Please fill in table." + Environment.NewLine;
+                GC.Collect();
+                
             }
         }
 
@@ -83,7 +102,9 @@ namespace MySQLBuilder
             }
             if (operation == "INSERT")
             {
-                previewText = "INSERT INTO `" + tbTableName.Text + "` (" + String.Join(",", columns) + ") VALUES (" + String.Join(",", cleanValues(fileContents[1]))  + ");";
+                previewText = "INSERT INTO `" + tbTableName.Text + "` (" + String.Join(",", columns) + ") VALUES (" + String.Join(",", fileContents[1])  + ");";
+
+                rtbConsole.Text += "[Request] Preview Generated" + Environment.NewLine;
             }
             else if (operation == "UPDATE")
             {
@@ -107,7 +128,10 @@ namespace MySQLBuilder
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 tbOutputFile.Text = saveFileDialog1.FileName;
+
+                rtbConsole.Text += "[Request] Output destination selected" + Environment.NewLine;
             }
+
         }
 
         private void btnGenerate_Click(object sender, EventArgs e)
@@ -115,7 +139,8 @@ namespace MySQLBuilder
             string operation = cbOperation.Text;
             string previewText = "";
             columns.Clear();
-            
+
+            rtbConsole.Text += "[Request] Collecting column data" + Environment.NewLine;
             foreach (DataGridViewRow row in dgvMapping.Rows)
             {
                 if (row.Cells["OutputCol"].Value != null)
@@ -127,8 +152,10 @@ namespace MySQLBuilder
                     columns.Add(new SQLColumn() { inputName = row.Cells["InputCol"].Value + "", outputName = "`" + row.Cells["OutputCol"].Value + "`", dataType = row.Cells["DTCol"].Value + "", length = len, isNull = Convert.ToBoolean(row.Cells["colNull"].Value), isPrimary = Convert.ToBoolean(row.Cells["colPrimary"].Value) });
                 }
             }
+
+            rtbConsole.Text += "[Request] Collecting SQL data" + Environment.NewLine;
             // Safety checks
-            if(checkValidity() == true)
+            if (checkValidity() == true)
             {
                 // If "Create Table if Not Exists" is checked
                 if (cbCTIfNotExists.Checked == true)
@@ -139,7 +166,7 @@ namespace MySQLBuilder
                 {
                     for (var idx0 = 1; idx0 < fileContents.Length; idx0++)
                     {
-                        outputData.Add("INSERT INTO `" + tbTableName.Text + "` (" + String.Join(",", columns.Select(x => x.outputName).ToList()) + ") VALUES (" + String.Join(",", cleanValues(fileContents[idx0])) + ");");
+                        outputData.Add("INSERT INTO `" + tbTableName.Text + "` (" + String.Join(",", columns.Select(x => x.outputName).ToList()) + ") VALUES (" + String.Join(",", fileContents[idx0]) + ");");
                     }
 
                 }
@@ -192,15 +219,33 @@ namespace MySQLBuilder
             }
             
         }
-        private string[] cleanValues(string x)
+        private void cleanString(int i)
         {
+            List<string> cleanedList = new List<string>();
             // Values that contain commas cannot be split from the file properly
-            TextFieldParser parser = new TextFieldParser(new StringReader(x));
+            TextFieldParser parser = new TextFieldParser(new StringReader(fileContents[i]));
             parser.HasFieldsEnclosedInQuotes = true;
             parser.SetDelimiters(",");
             List<string> rawFields = parser.ReadFields().ToList();
-            List<string> cleanedFields = new List<string>();
-            return rawFields.Select(f => "'" + f.Replace("'", "\\'") + "'").ToArray();
+            cleanedList.Add(string.Join(",", rawFields.Select(f => "'" + f.Replace("'", "\\'") + "'").ToArray()));
+            fileContents[i] = string.Join(",", cleanedList);
+            
+        }
+        private void cleanValues()
+        {
+            writeToConsole("Status", "Preparing Threads for data cleaning");
+            processingThreads.ForEach(t => t = new Thread(new ThreadStart(() =>
+            {
+                cleanString(processingThreads.IndexOf(t));
+                t.Start();
+            })));
+            writeToConsole("Status", "Commencing all threads for data cleaning");
+            //int i = 0;
+            //fileContents.ToList().ForEach(line =>
+            //{
+            //    Parallel.Invoke(() => cleanString(i));
+            //    i++;
+            //});
         }
         private string extractProperties(SQLColumn x)
         {
@@ -246,6 +291,11 @@ namespace MySQLBuilder
                 row.Cells["OutputCol"].Value = row.Cells["InputCol"].Value;
                 
             }
+        }
+        private void writeToConsole(string type, string message)
+        {
+            rtbConsole.Text += "[" + type + "] " + message + Environment.NewLine;
+            rtbConsole.ScrollToCaret();
         }
         private void resetForm()
         {
