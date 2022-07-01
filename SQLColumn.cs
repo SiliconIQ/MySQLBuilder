@@ -14,6 +14,7 @@ namespace MySQLBuilder
         public int length { get; set; }
         public bool isNull { get; set; }
         public bool isPrimary { get; set; }
+        public bool ignore { get; set; }
 
     }
 }

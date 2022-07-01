@@ -11,6 +11,7 @@ namespace MySQLBuilder
         public List<string> outputData = new List<string>();
         public List<SQLColumn> columns = new List<SQLColumn>();
         public List<Thread> processingThreads = new List<Thread>();
+        public List<int> idxColsRemove = new List<int>();
         public Form1()
         {
             InitializeComponent();
@@ -149,25 +150,45 @@ namespace MySQLBuilder
                     int len = 0;
                     if(row.Cells["LengthCol"].Value == null) { len = 0; }
                     else { len = int.Parse(row.Cells["LengthCol"].Value.ToString()); }
-                    columns.Add(new SQLColumn() { inputName = row.Cells["InputCol"].Value + "", outputName = "`" + row.Cells["OutputCol"].Value + "`", dataType = row.Cells["DTCol"].Value + "", length = len, isNull = Convert.ToBoolean(row.Cells["colNull"].Value), isPrimary = Convert.ToBoolean(row.Cells["colPrimary"].Value) });
+                    columns.Add(new SQLColumn() { inputName = row.Cells["InputCol"].Value + "", outputName = "`" + row.Cells["OutputCol"].Value + "`", dataType = row.Cells["DTCol"].Value + "", length = len, isNull = Convert.ToBoolean(row.Cells["colNull"].Value), isPrimary = Convert.ToBoolean(row.Cells["colPrimary"].Value), ignore = Convert.ToBoolean(row.Cells["colIgnore"].Value) });
                 }
             }
 
             rtbConsole.Text += "[Request] Collecting SQL data" + Environment.NewLine;
+            // Populate the list of cols to remove
+            idxColsRemove = columns.Where(x => x.ignore == true).Select(y => columns.IndexOf(y)).ToList();
             // Safety checks
             if (checkValidity() == true)
             {
                 // If "Create Table if Not Exists" is checked
                 if (cbCTIfNotExists.Checked == true)
                 {
-                    outputData.Add("CREATE TABLE IF NOT EXISTS `" + tbTableName.Text + "` (" + String.Join(",", columns.Select(x => x.outputName + " " + x.dataType + "(" + x.length + ") " + extractProperties(x)).ToList()) + ");");
+                    outputData.Add("CREATE TABLE IF NOT EXISTS `" + tbTableName.Text + "` (" + String.Join(",", columns.Where(x => x.ignore == false).Select(x => x.outputName + " " + x.dataType + "(" + x.length + ") " + extractProperties(x)).ToList()) + ");");
+                    
                 }
                 if (operation == "INSERT")
                 {
-                    for (var idx0 = 1; idx0 < fileContents.Length; idx0++)
+                    // If there aren't any columns to remove, don't waste time processing each line as if their could be
+                    if(idxColsRemove.Count == 0)
                     {
-                        outputData.Add("INSERT INTO `" + tbTableName.Text + "` (" + String.Join(",", columns.Select(x => x.outputName).ToList()) + ") VALUES (" + String.Join(",", fileContents[idx0]) + ");");
+                        for (var idx0 = 1; idx0 < fileContents.Length; idx0++)
+                        {
+                            outputData.Add("INSERT INTO `" + tbTableName.Text + "' (" + String.Join(",", columns.Select(x => x.outputName).ToList()) + ") VALUES (" + fileContents[0] + ");");
+                        }
                     }
+                    // Otherwise, walk through each line and remove the data not wanted
+                    else
+                    {
+                        for (var idx0 = 1; idx0 < fileContents.Length; idx0++)
+                        {
+                            string line = sortedRowInsertEntry(fileContents[idx0]);
+                            if (line != "")
+                            {
+                                outputData.Add(line);
+                            }
+                        }
+                    }
+                    
 
                 }
                 else if (operation == "UPDATE")
@@ -218,6 +239,29 @@ namespace MySQLBuilder
                 }
             }
             
+        }
+        private string sortedRowInsertEntry(string input)
+        {
+            string dat = "";
+            if(idxColsRemove.Count > 0)
+            {
+                List<string> cur = System.Text.RegularExpressions.Regex.Split(input, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").ToList();
+                //List<string> cur = System.Text.RegularExpressions.Regex.Split(input.Substring(1, input.Length - 2), @"""\s*,\s*""").ToList();
+                dat = string.Join(",", cur.Where(x => idxColsRemove.Contains(cur.IndexOf(x)) == false));
+            }
+            else
+            {
+                dat= input;
+            }
+
+            if(dat != "")
+            {
+                return "INSERT INTO `" + tbTableName.Text + "' (" + String.Join(",", columns.Where(x => x.ignore == false).Select(x => x.outputName).ToList()) + ") VALUES (" + dat + ");";
+            }
+            else
+            {
+                return "";
+            }
         }
         private void cleanString(int i)
         {

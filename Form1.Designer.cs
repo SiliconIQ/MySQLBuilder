@@ -29,12 +29,6 @@
         private void InitializeComponent()
         {
             this.dgvMapping = new System.Windows.Forms.DataGridView();
-            this.InputCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.OutputCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DTCol = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.LengthCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colNull = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.colPrimary = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.tbInputFilePath = new System.Windows.Forms.TextBox();
             this.btnLoadFile = new System.Windows.Forms.Button();
             this.btnSelectDest = new System.Windows.Forms.Button();
@@ -63,6 +57,13 @@
             this.rtbConsole = new System.Windows.Forms.RichTextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.InputCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OutputCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DTCol = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.LengthCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNull = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colPrimary = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colIgnore = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMapping)).BeginInit();
             this.pWildcards.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVolSize)).BeginInit();
@@ -78,7 +79,8 @@
             this.DTCol,
             this.LengthCol,
             this.colNull,
-            this.colPrimary});
+            this.colPrimary,
+            this.colIgnore});
             this.dgvMapping.Location = new System.Drawing.Point(12, 104);
             this.dgvMapping.Name = "dgvMapping";
             this.dgvMapping.RowHeadersWidth = 51;
@@ -86,62 +88,6 @@
             this.dgvMapping.Size = new System.Drawing.Size(894, 250);
             this.dgvMapping.TabIndex = 0;
             this.dgvMapping.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvMapping_CellContentClick);
-            // 
-            // InputCol
-            // 
-            this.InputCol.HeaderText = "Input Column";
-            this.InputCol.MinimumWidth = 6;
-            this.InputCol.Name = "InputCol";
-            this.InputCol.ReadOnly = true;
-            this.InputCol.Width = 175;
-            // 
-            // OutputCol
-            // 
-            this.OutputCol.HeaderText = "Target Column";
-            this.OutputCol.MinimumWidth = 6;
-            this.OutputCol.Name = "OutputCol";
-            this.OutputCol.Width = 175;
-            // 
-            // DTCol
-            // 
-            this.DTCol.HeaderText = "Data Type";
-            this.DTCol.Items.AddRange(new object[] {
-            "TINYINT",
-            "INT",
-            "FLOAT",
-            "VARCHAR",
-            "TEXT",
-            "TEXT",
-            "DATE",
-            "DATETIME",
-            "TIMESTAMP",
-            "JSON"});
-            this.DTCol.MinimumWidth = 6;
-            this.DTCol.Name = "DTCol";
-            this.DTCol.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.DTCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.DTCol.Width = 125;
-            // 
-            // LengthCol
-            // 
-            this.LengthCol.HeaderText = "Length";
-            this.LengthCol.MinimumWidth = 6;
-            this.LengthCol.Name = "LengthCol";
-            this.LengthCol.Width = 125;
-            // 
-            // colNull
-            // 
-            this.colNull.HeaderText = "NULL";
-            this.colNull.MinimumWidth = 6;
-            this.colNull.Name = "colNull";
-            this.colNull.Width = 125;
-            // 
-            // colPrimary
-            // 
-            this.colPrimary.HeaderText = "isPrimary";
-            this.colPrimary.MinimumWidth = 6;
-            this.colPrimary.Name = "colPrimary";
-            this.colPrimary.Width = 125;
             // 
             // tbInputFilePath
             // 
@@ -397,6 +343,68 @@
             this.panel1.Size = new System.Drawing.Size(889, 125);
             this.panel1.TabIndex = 21;
             // 
+            // InputCol
+            // 
+            this.InputCol.HeaderText = "Input Column";
+            this.InputCol.MinimumWidth = 6;
+            this.InputCol.Name = "InputCol";
+            this.InputCol.ReadOnly = true;
+            this.InputCol.Width = 175;
+            // 
+            // OutputCol
+            // 
+            this.OutputCol.HeaderText = "Target Column";
+            this.OutputCol.MinimumWidth = 6;
+            this.OutputCol.Name = "OutputCol";
+            this.OutputCol.Width = 175;
+            // 
+            // DTCol
+            // 
+            this.DTCol.HeaderText = "Data Type";
+            this.DTCol.Items.AddRange(new object[] {
+            "TINYINT",
+            "INT",
+            "FLOAT",
+            "VARCHAR",
+            "TEXT",
+            "TEXT",
+            "DATE",
+            "DATETIME",
+            "TIMESTAMP",
+            "JSON"});
+            this.DTCol.MinimumWidth = 6;
+            this.DTCol.Name = "DTCol";
+            this.DTCol.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.DTCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.DTCol.Width = 125;
+            // 
+            // LengthCol
+            // 
+            this.LengthCol.HeaderText = "Length";
+            this.LengthCol.MinimumWidth = 6;
+            this.LengthCol.Name = "LengthCol";
+            this.LengthCol.Width = 125;
+            // 
+            // colNull
+            // 
+            this.colNull.HeaderText = "NULL";
+            this.colNull.MinimumWidth = 6;
+            this.colNull.Name = "colNull";
+            this.colNull.Width = 75;
+            // 
+            // colPrimary
+            // 
+            this.colPrimary.HeaderText = "isPrimary";
+            this.colPrimary.MinimumWidth = 6;
+            this.colPrimary.Name = "colPrimary";
+            this.colPrimary.Width = 85;
+            // 
+            // colIgnore
+            // 
+            this.colIgnore.HeaderText = "Ignore";
+            this.colIgnore.MinimumWidth = 6;
+            this.colIgnore.Name = "colIgnore";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -456,12 +464,6 @@
         private Label label7;
         private CheckBox cbCTIfNotExists;
         private CheckBox cbWhereID;
-        private DataGridViewTextBoxColumn InputCol;
-        private DataGridViewTextBoxColumn OutputCol;
-        private DataGridViewComboBoxColumn DTCol;
-        private DataGridViewTextBoxColumn LengthCol;
-        private DataGridViewCheckBoxColumn colNull;
-        private DataGridViewCheckBoxColumn colPrimary;
         private Button btnCopyNames;
         private NumericUpDown nudVolSize;
         private Label label2;
@@ -469,5 +471,12 @@
         private RichTextBox rtbConsole;
         private Label label8;
         private Panel panel1;
+        private DataGridViewTextBoxColumn InputCol;
+        private DataGridViewTextBoxColumn OutputCol;
+        private DataGridViewComboBoxColumn DTCol;
+        private DataGridViewTextBoxColumn LengthCol;
+        private DataGridViewCheckBoxColumn colNull;
+        private DataGridViewCheckBoxColumn colPrimary;
+        private DataGridViewCheckBoxColumn colIgnore;
     }
 }
