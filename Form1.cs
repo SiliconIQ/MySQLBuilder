@@ -157,6 +157,7 @@ namespace MySQLBuilder
             rtbConsole.Text += "[Request] Collecting SQL data" + Environment.NewLine;
             // Populate the list of cols to remove
             idxColsRemove = columns.Where(x => x.ignore == true).Select(y => columns.IndexOf(y)).ToList();
+            float progress = 0;
             // Safety checks
             if (checkValidity() == true)
             {
@@ -174,6 +175,9 @@ namespace MySQLBuilder
                         for (var idx0 = 1; idx0 < fileContents.Length; idx0++)
                         {
                             outputData.Add("INSERT INTO `" + tbTableName.Text + "' (" + String.Join(",", columns.Select(x => x.outputName).ToList()) + ") VALUES (" + fileContents[0] + ");");
+
+                            progress += (((idx0 + 1)/(fileContents.Length+1))/2)*1000;
+                            while(pbOutput.Value < MathF.Round(progress)) { pbOutput.PerformStep(); };
                         }
                     }
                     // Otherwise, walk through each line and remove the data not wanted
@@ -185,6 +189,8 @@ namespace MySQLBuilder
                             if (line != "")
                             {
                                 outputData.Add(line);
+                                progress += (((idx0 + 1) / (fileContents.Length + 1)) / 2) * 1000;
+                                while (pbOutput.Value < MathF.Round(progress)) { pbOutput.PerformStep(); };
                             }
                         }
                     }
@@ -195,11 +201,20 @@ namespace MySQLBuilder
                 {
 
                 }
+                progress = 500f;
+                pbOutput.Value = (int)MathF.Round(progress);
                 if(nudVolSize.Value == 0)
                 {
                     using (StreamWriter sw = new StreamWriter(tbOutputFile.Text))
                     {
-                        outputData.ForEach(line => sw.WriteLine(line));
+                        int idx0 = 0;
+                        outputData.ForEach(line => {
+                            sw.WriteLine(line);
+                            progress += (((idx0 + 1) / (fileContents.Length + 1)) / 2) * 1000;
+                            while (pbOutput.Value < MathF.Round(progress)) { pbOutput.PerformStep(); };
+                            idx0++;
+                        });
+
                         sw.Close();
                     }
                     resetForm();

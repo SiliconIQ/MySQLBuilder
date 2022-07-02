@@ -29,6 +29,13 @@
         private void InitializeComponent()
         {
             this.dgvMapping = new System.Windows.Forms.DataGridView();
+            this.InputCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OutputCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DTCol = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.LengthCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNull = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colPrimary = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colIgnore = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.tbInputFilePath = new System.Windows.Forms.TextBox();
             this.btnLoadFile = new System.Windows.Forms.Button();
             this.btnSelectDest = new System.Windows.Forms.Button();
@@ -57,13 +64,10 @@
             this.rtbConsole = new System.Windows.Forms.RichTextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.InputCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.OutputCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DTCol = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.LengthCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colNull = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.colPrimary = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.colIgnore = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.pbOutput = new System.Windows.Forms.ProgressBar();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.pbInput = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMapping)).BeginInit();
             this.pWildcards.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVolSize)).BeginInit();
@@ -81,13 +85,76 @@
             this.colNull,
             this.colPrimary,
             this.colIgnore});
-            this.dgvMapping.Location = new System.Drawing.Point(12, 104);
+            this.dgvMapping.Location = new System.Drawing.Point(12, 134);
             this.dgvMapping.Name = "dgvMapping";
             this.dgvMapping.RowHeadersWidth = 51;
             this.dgvMapping.RowTemplate.Height = 29;
-            this.dgvMapping.Size = new System.Drawing.Size(894, 250);
+            this.dgvMapping.Size = new System.Drawing.Size(894, 220);
             this.dgvMapping.TabIndex = 0;
             this.dgvMapping.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvMapping_CellContentClick);
+            // 
+            // InputCol
+            // 
+            this.InputCol.HeaderText = "Input Column";
+            this.InputCol.MinimumWidth = 6;
+            this.InputCol.Name = "InputCol";
+            this.InputCol.ReadOnly = true;
+            this.InputCol.Width = 175;
+            // 
+            // OutputCol
+            // 
+            this.OutputCol.HeaderText = "Target Column";
+            this.OutputCol.MinimumWidth = 6;
+            this.OutputCol.Name = "OutputCol";
+            this.OutputCol.Width = 175;
+            // 
+            // DTCol
+            // 
+            this.DTCol.HeaderText = "Data Type";
+            this.DTCol.Items.AddRange(new object[] {
+            "TINYINT",
+            "INT",
+            "FLOAT",
+            "VARCHAR",
+            "TEXT",
+            "TEXT",
+            "DATE",
+            "DATETIME",
+            "TIMESTAMP",
+            "JSON"});
+            this.DTCol.MinimumWidth = 6;
+            this.DTCol.Name = "DTCol";
+            this.DTCol.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.DTCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.DTCol.Width = 125;
+            // 
+            // LengthCol
+            // 
+            this.LengthCol.HeaderText = "Length";
+            this.LengthCol.MinimumWidth = 6;
+            this.LengthCol.Name = "LengthCol";
+            this.LengthCol.Width = 125;
+            // 
+            // colNull
+            // 
+            this.colNull.HeaderText = "NULL";
+            this.colNull.MinimumWidth = 6;
+            this.colNull.Name = "colNull";
+            this.colNull.Width = 75;
+            // 
+            // colPrimary
+            // 
+            this.colPrimary.HeaderText = "isPrimary";
+            this.colPrimary.MinimumWidth = 6;
+            this.colPrimary.Name = "colPrimary";
+            this.colPrimary.Width = 85;
+            // 
+            // colIgnore
+            // 
+            this.colIgnore.HeaderText = "Ignore";
+            this.colIgnore.MinimumWidth = 6;
+            this.colIgnore.Name = "colIgnore";
+            this.colIgnore.Width = 125;
             // 
             // tbInputFilePath
             // 
@@ -108,7 +175,7 @@
             // 
             // btnSelectDest
             // 
-            this.btnSelectDest.Location = new System.Drawing.Point(629, 488);
+            this.btnSelectDest.Location = new System.Drawing.Point(629, 505);
             this.btnSelectDest.Name = "btnSelectDest";
             this.btnSelectDest.Size = new System.Drawing.Size(138, 29);
             this.btnSelectDest.TabIndex = 4;
@@ -118,14 +185,14 @@
             // 
             // tbOutputFile
             // 
-            this.tbOutputFile.Location = new System.Drawing.Point(109, 488);
+            this.tbOutputFile.Location = new System.Drawing.Point(109, 505);
             this.tbOutputFile.Name = "tbOutputFile";
             this.tbOutputFile.Size = new System.Drawing.Size(514, 27);
             this.tbOutputFile.TabIndex = 3;
             // 
             // rtbPreview
             // 
-            this.rtbPreview.Location = new System.Drawing.Point(180, 434);
+            this.rtbPreview.Location = new System.Drawing.Point(180, 451);
             this.rtbPreview.Name = "rtbPreview";
             this.rtbPreview.Size = new System.Drawing.Size(726, 45);
             this.rtbPreview.TabIndex = 5;
@@ -134,7 +201,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 78);
+            this.label1.Location = new System.Drawing.Point(12, 109);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(69, 20);
             this.label1.TabIndex = 6;
@@ -142,7 +209,7 @@
             // 
             // btnPreview
             // 
-            this.btnPreview.Location = new System.Drawing.Point(12, 434);
+            this.btnPreview.Location = new System.Drawing.Point(12, 451);
             this.btnPreview.Name = "btnPreview";
             this.btnPreview.Size = new System.Drawing.Size(162, 45);
             this.btnPreview.TabIndex = 8;
@@ -199,7 +266,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 491);
+            this.label6.Location = new System.Drawing.Point(18, 509);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(85, 20);
             this.label6.TabIndex = 14;
@@ -222,7 +289,7 @@
             // 
             // btnGenerate
             // 
-            this.btnGenerate.Location = new System.Drawing.Point(773, 488);
+            this.btnGenerate.Location = new System.Drawing.Point(773, 505);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(133, 29);
             this.btnGenerate.TabIndex = 16;
@@ -308,9 +375,10 @@
             // 
             // btnCopyNames
             // 
-            this.btnCopyNames.Location = new System.Drawing.Point(87, 71);
+            this.btnCopyNames.Font = new System.Drawing.Font("Segoe UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btnCopyNames.Location = new System.Drawing.Point(87, 110);
             this.btnCopyNames.Name = "btnCopyNames";
-            this.btnCopyNames.Size = new System.Drawing.Size(132, 29);
+            this.btnCopyNames.Size = new System.Drawing.Size(151, 21);
             this.btnCopyNames.TabIndex = 18;
             this.btnCopyNames.Text = "Copy Names =>";
             this.btnCopyNames.UseVisualStyleBackColor = true;
@@ -328,7 +396,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(3, 2);
+            this.label8.Location = new System.Drawing.Point(3, 3);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(94, 20);
             this.label8.TabIndex = 20;
@@ -338,78 +406,58 @@
             // 
             this.panel1.Controls.Add(this.rtbConsole);
             this.panel1.Controls.Add(this.label8);
-            this.panel1.Location = new System.Drawing.Point(12, 521);
+            this.panel1.Location = new System.Drawing.Point(12, 576);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(889, 125);
             this.panel1.TabIndex = 21;
             // 
-            // InputCol
+            // pbOutput
             // 
-            this.InputCol.HeaderText = "Input Column";
-            this.InputCol.MinimumWidth = 6;
-            this.InputCol.Name = "InputCol";
-            this.InputCol.ReadOnly = true;
-            this.InputCol.Width = 175;
+            this.pbOutput.Location = new System.Drawing.Point(136, 538);
+            this.pbOutput.Maximum = 1000;
+            this.pbOutput.Name = "pbOutput";
+            this.pbOutput.Size = new System.Drawing.Size(770, 29);
+            this.pbOutput.Step = 1;
+            this.pbOutput.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.pbOutput.TabIndex = 22;
             // 
-            // OutputCol
+            // label9
             // 
-            this.OutputCol.HeaderText = "Target Column";
-            this.OutputCol.MinimumWidth = 6;
-            this.OutputCol.Name = "OutputCol";
-            this.OutputCol.Width = 175;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(18, 543);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(118, 20);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "Output Progress:";
             // 
-            // DTCol
+            // label10
             // 
-            this.DTCol.HeaderText = "Data Type";
-            this.DTCol.Items.AddRange(new object[] {
-            "TINYINT",
-            "INT",
-            "FLOAT",
-            "VARCHAR",
-            "TEXT",
-            "TEXT",
-            "DATE",
-            "DATETIME",
-            "TIMESTAMP",
-            "JSON"});
-            this.DTCol.MinimumWidth = 6;
-            this.DTCol.Name = "DTCol";
-            this.DTCol.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.DTCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.DTCol.Width = 125;
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(13, 80);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(106, 20);
+            this.label10.TabIndex = 25;
+            this.label10.Text = "Read Progress:";
             // 
-            // LengthCol
+            // pbInput
             // 
-            this.LengthCol.HeaderText = "Length";
-            this.LengthCol.MinimumWidth = 6;
-            this.LengthCol.Name = "LengthCol";
-            this.LengthCol.Width = 125;
-            // 
-            // colNull
-            // 
-            this.colNull.HeaderText = "NULL";
-            this.colNull.MinimumWidth = 6;
-            this.colNull.Name = "colNull";
-            this.colNull.Width = 75;
-            // 
-            // colPrimary
-            // 
-            this.colPrimary.HeaderText = "isPrimary";
-            this.colPrimary.MinimumWidth = 6;
-            this.colPrimary.Name = "colPrimary";
-            this.colPrimary.Width = 85;
-            // 
-            // colIgnore
-            // 
-            this.colIgnore.HeaderText = "Ignore";
-            this.colIgnore.MinimumWidth = 6;
-            this.colIgnore.Name = "colIgnore";
+            this.pbInput.Location = new System.Drawing.Point(125, 75);
+            this.pbInput.Maximum = 1000;
+            this.pbInput.Name = "pbInput";
+            this.pbInput.Size = new System.Drawing.Size(776, 29);
+            this.pbInput.Step = 1;
+            this.pbInput.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.pbInput.TabIndex = 24;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(913, 649);
+            this.ClientSize = new System.Drawing.Size(913, 702);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.pbInput);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.pbOutput);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnCopyNames);
             this.Controls.Add(this.pWildcards);
@@ -478,5 +526,9 @@
         private DataGridViewCheckBoxColumn colNull;
         private DataGridViewCheckBoxColumn colPrimary;
         private DataGridViewCheckBoxColumn colIgnore;
+        private ProgressBar pbOutput;
+        private Label label9;
+        private Label label10;
+        private ProgressBar pbInput;
     }
 }
